@@ -4,197 +4,589 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>AI Code Builder</title>
+<title>ForgeAI — AI Code Builder</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <link
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-  rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet"
 >
 
 <link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+rel="stylesheet"
 >
 
 <style>
 
-/* =====================================================
-   GLOBAL
-===================================================== */
+/* =========================================================
+   ROOT
+========================================================= */
+
+:root {
+    --bg: #07080d;
+    --surface: #0d0f16;
+    --surface-2: #11141d;
+    --surface-3: #171a24;
+
+    --border: rgba(255,255,255,.075);
+    --border-hover: rgba(255,255,255,.14);
+
+    --text: #f7f7fb;
+    --muted: #8d93a5;
+
+    --purple: #7c5cff;
+    --purple-2: #a78bfa;
+
+    --cyan: #22d3ee;
+    --green: #34d399;
+
+    --shadow:
+        0 25px 80px rgba(0,0,0,.45);
+
+    --radius: 14px;
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
 
 * {
     box-sizing: border-box;
 }
 
-:root {
-    --bg: #080b12;
-    --panel: #0f141e;
-    --panel2: #151b27;
-    --border: #252d3a;
-    --text: #f5f7fa;
-    --muted: #8b95a7;
-    --primary: #6366f1;
-    --primary-hover: #4f46e5;
-    --editor: #080b10;
+html,
+body {
+    width: 100%;
+    height: 100%;
 }
 
 body {
     margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+
     overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(124,92,255,.12),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 10%,
+            rgba(34,211,238,.06),
+            transparent 25%
+        ),
+        var(--bg);
+
+    color: var(--text);
+
+    font-family:
+        "Inter",
+        sans-serif;
 }
 
 
-/* =====================================================
-   NAVBAR
-===================================================== */
+/* =========================================================
+   BACKGROUND GRID
+========================================================= */
 
-.navbar {
-    height: 64px;
-    background: var(--panel);
-    border-bottom: 1px solid var(--border);
+body::before {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+
+    opacity: .22;
+
+    background-image:
+        linear-gradient(
+            rgba(255,255,255,.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.025) 1px,
+            transparent 1px
+        );
+
+    background-size: 40px 40px;
+
+    mask-image:
+        linear-gradient(
+            to bottom,
+            black,
+            transparent 80%
+        );
 }
 
-.logo {
-    width: 38px;
-    height: 38px;
 
-    display: inline-flex;
+/* =========================================================
+   APP
+========================================================= */
+
+.app {
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    position: relative;
+    z-index: 1;
+}
+
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.topbar {
+    height: 68px;
+    flex-shrink: 0;
+
+    display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+
+    padding: 0 20px;
+
+    background:
+        rgba(8,9,14,.82);
+
+    backdrop-filter:
+        blur(24px);
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+
+.brand-mark {
+    width: 36px;
+    height: 36px;
+
+    display: grid;
+    place-items: center;
 
     border-radius: 10px;
 
-    background: linear-gradient(
-        135deg,
-        #6366f1,
-        #8b5cf6
-    );
+    background:
+        linear-gradient(
+            135deg,
+            #7c5cff,
+            #a855f7
+        );
+
+    box-shadow:
+        0 0 30px
+        rgba(124,92,255,.35);
 
     color: white;
 
-    margin-right: 9px;
+    font-size: 17px;
 }
 
-.navbar-brand {
-    color: white !important;
+
+.brand-name {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -.3px;
+}
+
+
+.brand-badge {
+    margin-left: 5px;
+
+    padding: 3px 7px;
+
+    border-radius: 5px;
+
+    background:
+        rgba(124,92,255,.12);
+
+    border:
+        1px solid
+        rgba(124,92,255,.2);
+
+    color:
+        #b9aaff;
+
+    font-size: 9px;
     font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: .6px;
 }
 
 
-/* =====================================================
-   APP
-===================================================== */
-
-.app {
-    height: calc(100vh - 64px);
-}
-
-.sidebar,
-.chat {
-    background: var(--panel);
-}
-
-.sidebar {
-    border-right: 1px solid var(--border);
-}
-
-.chat {
-    border-left: 1px solid var(--border);
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 
-/* =====================================================
-   SIDEBAR
-===================================================== */
+.top-btn {
+    height: 35px;
 
-.sidebar-title {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: var(--muted);
-    margin-bottom: 15px;
-}
+    padding: 0 11px;
 
-.new-project {
-    width: 100%;
-    padding: 9px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
 
-    border: 1px solid var(--border);
+    border:
+        1px solid var(--border);
+
     border-radius: 8px;
 
-    background: var(--panel2);
-    color: white;
+    background:
+        rgba(255,255,255,.025);
 
-    text-align: left;
+    color:
+        #b7bdcc;
+
+    font-size: 12px;
+
+    transition: .2s;
 }
 
-.new-project:hover {
-    background: #1d2533;
-}
 
-.folder {
-    margin-top: 20px;
-    padding: 7px;
+.top-btn:hover {
+    border-color:
+        var(--border-hover);
 
-    font-size: 14px;
-    font-weight: 600;
-}
+    background:
+        rgba(255,255,255,.055);
 
-.folder i {
-    color: #f59e0b;
-}
-
-.file {
-    padding: 8px 8px 8px 25px;
-
-    border-radius: 7px;
-
-    color: var(--muted);
-
-    cursor: pointer;
-
-    font-size: 13px;
-}
-
-.file:hover {
-    background: var(--panel2);
     color: white;
 }
 
-.file.active {
-    background: rgba(99,102,241,.15);
-    color: #a5b4fc;
+
+.user-avatar {
+    width: 31px;
+    height: 31px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #31364a,
+            #171a25
+        );
+
+    border:
+        1px solid var(--border);
+
+    font-size: 11px;
+    font-weight: 700;
 }
 
 
-/* =====================================================
-   CENTER
-===================================================== */
+/* =========================================================
+   WORKSPACE
+========================================================= */
 
-.center {
-    height: 100%;
-    background: var(--editor);
+.workspace {
+    flex: 1;
+
+    min-height: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        220px
+        minmax(400px, 1fr)
+        390px;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+    min-width: 0;
+
+    background:
+        rgba(10,12,18,.75);
+
+    border-right:
+        1px solid var(--border);
 
     display: flex;
     flex-direction: column;
 }
 
 
-/* =====================================================
-   EDITOR HEADER
-===================================================== */
+.sidebar-inner {
+    padding: 16px;
+}
 
-.editor-header {
-    height: 54px;
+
+.section-label {
+    color: #656c7d;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+
+    margin-bottom: 10px;
+}
+
+
+.new-project {
+    width: 100%;
+    height: 37px;
+
+    border:
+        1px solid
+        rgba(124,92,255,.28);
+
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(124,92,255,.18),
+            rgba(124,92,255,.06)
+        );
+
+    color:
+        #c9c1ff;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    transition: .2s;
+}
+
+
+.new-project:hover {
+    background:
+        rgba(124,92,255,.25);
+
+    color: white;
+}
+
+
+.project-info {
+    margin-top: 24px;
+
+    padding-bottom: 12px;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+
+.project-name {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+.project-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    margin-top: 5px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+}
+
+
+.online-dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: var(--green);
+
+    box-shadow:
+        0 0 8px
+        rgba(52,211,153,.7);
+}
+
+
+.file-tree {
+    margin-top: 18px;
+}
+
+
+.tree-folder {
+    padding: 7px 6px;
+
+    color: #aeb4c3;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+.tree-folder i {
+    color: #fbbf24;
+    margin-right: 7px;
+}
+
+
+.tree-file {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 9px 8px 27px;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: transparent;
+
+    color: #767e90;
+
+    text-align: left;
+
+    font-size: 11px;
+
+    transition: .15s;
+}
+
+
+.tree-file:hover {
+    background:
+        rgba(255,255,255,.035);
+
+    color: #d7dbe4;
+}
+
+
+.tree-file.active {
+    background:
+        rgba(124,92,255,.12);
+
+    color:
+        #b8adff;
+}
+
+
+.tree-file.html i {
+    color: #f97316;
+}
+
+.tree-file.css i {
+    color: #38bdf8;
+}
+
+.tree-file.js i {
+    color: #facc15;
+}
+
+
+/* =========================================================
+   SIDEBAR BOTTOM
+========================================================= */
+
+.sidebar-bottom {
+    margin-top: auto;
+
+    padding: 15px;
+
+    border-top:
+        1px solid var(--border);
+}
+
+
+.usage-title {
+    display: flex;
+    justify-content: space-between;
+
+    color: #8b92a3;
+
+    font-size: 9px;
+}
+
+
+.usage-title strong {
+    color: white;
+}
+
+
+.usage-bar {
+    height: 4px;
+
+    margin-top: 8px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,.06);
+}
+
+
+.usage-progress {
+    width: 38%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--purple),
+            var(--cyan)
+        );
+}
+
+
+/* =========================================================
+   CENTER
+========================================================= */
+
+.center {
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    background:
+        rgba(7,9,14,.72);
+}
+
+
+/* =========================================================
+   EDITOR TOOLBAR
+========================================================= */
+
+.editor-toolbar {
+    height: 50px;
+    flex-shrink: 0;
 
     display: flex;
     align-items: center;
@@ -202,53 +594,183 @@ body {
 
     padding: 0 12px;
 
-    background: var(--panel);
+    background:
+        rgba(13,15,22,.92);
 
-    border-bottom: 1px solid var(--border);
+    border-bottom:
+        1px solid var(--border);
 }
 
-.tabs {
+
+.editor-tabs {
+    height: 100%;
+
     display: flex;
-    gap: 4px;
+    align-items: center;
+    gap: 2px;
 }
 
-.tab {
+
+.editor-tab {
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 0 13px;
+
     border: 0;
+
+    border-bottom:
+        2px solid transparent;
+
     background: transparent;
 
-    color: var(--muted);
+    color: #686f81;
 
-    padding: 8px 12px;
+    font-size: 10px;
+    font-weight: 600;
 
-    border-radius: 7px;
-
-    font-size: 12px;
+    transition: .2s;
 }
 
-.tab:hover {
+
+.editor-tab:hover {
+    color: #bfc4d0;
+}
+
+
+.editor-tab.active {
     color: white;
+
+    border-bottom-color:
+        var(--purple);
+
+    background:
+        linear-gradient(
+            to bottom,
+            transparent,
+            rgba(124,92,255,.06)
+        );
 }
 
-.tab.active {
-    background: var(--panel2);
-    color: white;
+
+.editor-tab .file-icon-html {
+    color: #f97316;
 }
 
-.editor-buttons {
+.editor-tab .file-icon-css {
+    color: #38bdf8;
+}
+
+.editor-tab .file-icon-js {
+    color: #facc15;
+}
+
+
+.toolbar-actions {
     display: flex;
     gap: 5px;
 }
 
 
-/* =====================================================
-   CODE EDITOR
-===================================================== */
+.icon-btn {
+    width: 30px;
+    height: 30px;
+
+    display: grid;
+    place-items: center;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 7px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    color: #858c9c;
+
+    font-size: 12px;
+}
+
+
+.icon-btn:hover {
+    color: white;
+
+    border-color:
+        var(--border-hover);
+
+    background:
+        rgba(255,255,255,.05);
+}
+
+
+.run-btn {
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 0 11px;
+
+    border: 0;
+
+    border-radius: 7px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c5cff,
+            #6845e8
+        );
+
+    color: white;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    box-shadow:
+        0 5px 20px
+        rgba(124,92,255,.2);
+}
+
+
+/* =========================================================
+   EDITOR
+========================================================= */
 
 .editor {
-    height: 45%;
+    height: 48%;
+
+    min-height: 260px;
 
     position: relative;
+
+    background:
+        #080a0f;
 }
+
+
+.editor-top {
+    position: absolute;
+
+    top: 12px;
+    right: 15px;
+
+    z-index: 2;
+
+    color: #424858;
+
+    font-family:
+        "DM Mono",
+        monospace;
+
+    font-size: 9px;
+}
+
 
 #code {
     width: 100%;
@@ -258,39 +780,54 @@ body {
     outline: none;
     border: 0;
 
-    background: var(--editor);
-    color: #d1d5db;
+    padding: 25px 24px;
 
-    padding: 20px;
+    background:
+        #080a0f;
+
+    color:
+        #cbd0db;
 
     font-family:
-        "Fira Code",
-        Consolas,
-        Monaco,
+        "DM Mono",
         monospace;
 
-    font-size: 14px;
-    line-height: 1.7;
+    font-size: 12px;
+
+    line-height: 1.8;
 
     tab-size: 4;
 }
 
 
-/* =====================================================
+#code::selection {
+    background:
+        rgba(124,92,255,.25);
+}
+
+
+/* =========================================================
    PREVIEW
-===================================================== */
+========================================================= */
 
 .preview {
     flex: 1;
 
-    background: white;
+    min-height: 0;
 
     display: flex;
     flex-direction: column;
+
+    background: #fff;
+
+    border-top:
+        1px solid var(--border);
 }
 
-.preview-header {
-    height: 42px;
+
+.preview-toolbar {
+    height: 38px;
+    flex-shrink: 0;
 
     display: flex;
     align-items: center;
@@ -298,17 +835,52 @@ body {
 
     padding: 0 12px;
 
-    background: var(--panel);
+    background:
+        #0f1219;
 
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    color: #7f8798;
 
-    font-size: 12px;
+    font-size: 9px;
 }
 
+
+.browser-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+
+.browser-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #3b4150;
+}
+
+
+.preview-url {
+    margin-left: 10px;
+
+    padding: 4px 12px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 5px;
+
+    color: #666e7f;
+
+    font-size: 8px;
+}
+
+
 #preview {
-    width: 100%;
     flex: 1;
+
+    width: 100%;
 
     border: 0;
 
@@ -316,267 +888,569 @@ body {
 }
 
 
-/* =====================================================
+/* =========================================================
    CHAT
-===================================================== */
+========================================================= */
 
 .chat {
-    height: 100%;
+    min-width: 0;
 
     display: flex;
     flex-direction: column;
+
+    background:
+        rgba(12,14,21,.92);
+
+    border-left:
+        1px solid var(--border);
 }
 
+
 .chat-header {
-    height: 72px;
+    height: 62px;
+    flex-shrink: 0;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    padding: 12px 15px;
+    padding: 0 15px;
 
-    border-bottom: 1px solid var(--border);
+    border-bottom:
+        1px solid var(--border);
 }
 
-.ai-name {
-    font-weight: 700;
-    font-size: 14px;
+
+.ai-heading {
+    display: flex;
+    align-items: center;
+    gap: 9px;
 }
 
-.ai-online {
-    width: 8px;
-    height: 8px;
 
-    display: inline-block;
+.ai-logo {
+    width: 29px;
+    height: 29px;
 
-    background: #22c55e;
+    display: grid;
+    place-items: center;
 
-    border-radius: 50%;
+    border-radius: 8px;
 
-    margin-right: 5px;
+    background:
+        linear-gradient(
+            135deg,
+            #7c5cff,
+            #22d3ee
+        );
+
+    font-size: 12px;
 }
 
-.chat-subtitle {
-    color: var(--muted);
+
+.ai-title {
     font-size: 11px;
+    font-weight: 700;
 }
 
 
-/* =====================================================
-   MESSAGES
-===================================================== */
+.ai-subtitle {
+    margin-top: 2px;
+
+    color: #686f80;
+
+    font-size: 8px;
+}
+
+
+.chat-actions {
+    display: flex;
+    gap: 4px;
+}
+
+
+/* =========================================================
+   CHAT MESSAGES
+========================================================= */
 
 .messages {
     flex: 1;
 
+    min-height: 0;
+
     overflow-y: auto;
 
-    padding: 15px;
+    padding: 18px 15px;
 }
+
+
+.messages::-webkit-scrollbar {
+    width: 4px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+    background: #242938;
+    border-radius: 10px;
+}
+
 
 .message {
     display: flex;
     gap: 9px;
 
-    margin-bottom: 18px;
+    margin-bottom: 20px;
 }
 
-.avatar {
+
+.message-avatar {
+    width: 27px;
+    height: 27px;
+
     flex-shrink: 0;
 
-    width: 31px;
-    height: 31px;
+    display: grid;
+    place-items: center;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border-radius: 7px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c5cff,
+            #6548e8
+        );
+
+    color: white;
+
+    font-size: 10px;
+}
+
+
+.user-message .message-avatar {
+    background:
+        #252a37;
+
+    color: #aeb5c5;
+}
+
+
+.message-body {
+    min-width: 0;
+}
+
+
+.message-name {
+    margin-bottom: 5px;
+
+    color: #9299a9;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+.message-text {
+    color: #c1c6d1;
+
+    font-size: 11px;
+
+    line-height: 1.7;
+}
+
+
+.message-text strong {
+    color: white;
+}
+
+
+.code-result {
+    margin-top: 10px;
+
+    padding: 10px;
+
+    border:
+        1px solid var(--border);
 
     border-radius: 8px;
 
-    background: var(--primary);
+    background:
+        #080a0f;
 
-    color: white;
+    font-family:
+        "DM Mono",
+        monospace;
 
-    font-size: 13px;
-}
+    color: #aab1c0;
 
-.user .avatar {
-    background: #374151;
-}
-
-.message-text {
-    font-size: 13px;
-    line-height: 1.6;
-    color: #cbd5e1;
-}
-
-.message-name {
-    font-size: 12px;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 3px;
-}
-
-
-/* =====================================================
-   PROMPT
-===================================================== */
-
-.prompt-area {
-    padding: 13px;
-
-    border-top: 1px solid var(--border);
-}
-
-.language-label {
-    color: var(--muted);
-    font-size: 11px;
-
-    margin-bottom: 6px;
-}
-
-.language {
-    background: var(--panel2);
-    color: white;
-
-    border: 1px solid var(--border);
-
-    font-size: 12px;
-}
-
-.language:focus {
-    background: var(--panel2);
-    color: white;
-
-    border-color: var(--primary);
-
-    box-shadow: none;
-}
-
-.language option {
-    background: #111827;
-    color: white;
-}
-
-.prompt-box {
-    margin-top: 10px;
-
-    border: 1px solid var(--border);
-
-    border-radius: 10px;
-
-    background: var(--panel2);
+    font-size: 9px;
 
     overflow: hidden;
 }
 
+
+.result-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 3px 0;
+}
+
+
+.check {
+    color: var(--green);
+}
+
+
+/* =========================================================
+   PROMPT
+========================================================= */
+
+.prompt-area {
+    flex-shrink: 0;
+
+    padding: 12px;
+
+    border-top:
+        1px solid var(--border);
+
+    background:
+        rgba(9,11,17,.95);
+}
+
+
+.language-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 8px;
+}
+
+
+.language-label {
+    color: #656c7d;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: .9px;
+}
+
+
+#language {
+    height: 28px;
+
+    width: 145px;
+
+    padding: 0 8px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 6px;
+
+    outline: 0;
+
+    background:
+        #141821;
+
+    color: #aeb5c4;
+
+    font-size: 9px;
+}
+
+
+.prompt-box {
+    overflow: hidden;
+
+    border:
+        1px solid rgba(255,255,255,.09);
+
+    border-radius: 10px;
+
+    background:
+        #10131b;
+
+    transition: .2s;
+}
+
+
+.prompt-box:focus-within {
+    border-color:
+        rgba(124,92,255,.45);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(124,92,255,.07);
+}
+
+
 #prompt {
     width: 100%;
 
+    min-height: 80px;
+
     resize: none;
+
+    padding: 12px;
 
     border: 0;
     outline: 0;
 
     background: transparent;
 
-    color: white;
+    color: #e5e7ee;
 
-    padding: 12px;
+    font-family:
+        "Inter",
+        sans-serif;
 
-    font-size: 13px;
+    font-size: 11px;
+
+    line-height: 1.6;
 }
+
 
 #prompt::placeholder {
-    color: #667085;
+    color: #505767;
 }
+
 
 .prompt-footer {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 
-    padding: 7px 9px;
+    padding: 7px 8px;
 }
 
-.ai-powered {
-    color: var(--muted);
-    font-size: 10px;
+
+.prompt-tools {
+    display: flex;
+    gap: 3px;
 }
 
-.generate {
+
+.prompt-tool {
+    width: 27px;
+    height: 27px;
+
+    display: grid;
+    place-items: center;
+
     border: 0;
 
-    padding: 8px 13px;
+    border-radius: 6px;
+
+    background: transparent;
+
+    color: #606879;
+
+    font-size: 11px;
+}
+
+
+.prompt-tool:hover {
+    background: rgba(255,255,255,.05);
+    color: #aab1c0;
+}
+
+
+.generate {
+    height: 31px;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 0 12px;
+
+    border: 0;
 
     border-radius: 7px;
 
-    background: var(--primary);
+    background:
+        linear-gradient(
+            135deg,
+            #7c5cff,
+            #6545e8
+        );
+
+    color: white;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    box-shadow:
+        0 5px 18px
+        rgba(124,92,255,.22);
+}
+
+
+.generate:hover {
+    transform: translateY(-1px);
+}
+
+
+.generate:disabled {
+    opacity: .6;
+    transform: none;
+}
+
+
+/* =========================================================
+   WELCOME EMPTY STATE
+========================================================= */
+
+.welcome {
+    margin-bottom: 24px;
+
+    padding: 14px;
+
+    border:
+        1px solid
+        rgba(124,92,255,.12);
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(124,92,255,.07),
+            rgba(34,211,238,.025)
+        );
+}
+
+
+.welcome-title {
+    margin-bottom: 5px;
 
     color: white;
 
     font-size: 12px;
-    font-weight: 600;
-}
-
-.generate:hover {
-    background: var(--primary-hover);
-}
-
-.generate:disabled {
-    opacity: .6;
+    font-weight: 700;
 }
 
 
-/* =====================================================
-   LIGHT MODE
-===================================================== */
+.welcome-text {
+    color: #777f90;
 
-.light {
-    --bg: #f4f6f9;
-    --panel: #ffffff;
-    --panel2: #f0f2f5;
-    --border: #dfe3e8;
-    --text: #111827;
-    --muted: #6b7280;
-    --editor: #fafafa;
-}
+    font-size: 10px;
 
-.light .navbar-brand {
-    color: #111827 !important;
-}
-
-.light .new-project,
-.light .language {
-    color: #111827;
-}
-
-.light #code {
-    color: #1f2937;
-}
-
-.light .message-name {
-    color: #111827;
-}
-
-.light .message-text {
-    color: #4b5563;
+    line-height: 1.6;
 }
 
 
-/* =====================================================
-   MOBILE
-===================================================== */
+.suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
 
-@media(max-width: 991px) {
+    margin-top: 10px;
+}
+
+
+.suggestion {
+    padding: 5px 7px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 5px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    color: #7d8494;
+
+    font-size: 8px;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+
+.suggestion:hover {
+    color: #c3c8d4;
+
+    border-color:
+        rgba(124,92,255,.25);
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast-message {
+    position: fixed;
+
+    right: 20px;
+    bottom: 20px;
+
+    z-index: 100;
+
+    padding: 10px 14px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 8px;
+
+    background:
+        #151922;
+
+    color: #dce0e8;
+
+    font-size: 10px;
+
+    box-shadow: var(--shadow);
+
+    transform:
+        translateY(20px);
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: .25s;
+}
+
+
+.toast-message.show {
+    transform:
+        translateY(0);
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width: 1100px) {
+
+    .workspace {
+        grid-template-columns:
+            190px
+            minmax(350px,1fr)
+            330px;
+    }
+
+}
+
+
+@media(max-width: 900px) {
 
     body {
         overflow: auto;
     }
 
-    .app {
-        height: auto;
+    .workspace {
+        display: block;
     }
 
     .sidebar {
@@ -588,17 +1462,78 @@ body {
     }
 
     .chat {
-        min-height: 600px;
+        height: 650px;
+
+        border-left: 0;
+
+        border-top:
+            1px solid var(--border);
     }
 
-    .editor {
-        height: 400px;
+}
+
+
+@media(max-width: 600px) {
+
+    .topbar {
+        padding: 0 12px;
     }
 
-    .preview {
-        min-height: 300px;
+    .brand-badge {
+        display: none;
     }
 
+    .top-btn span {
+        display: none;
+    }
+
+    .workspace {
+        display: block;
+    }
+
+    .editor-toolbar {
+        padding: 0 7px;
+    }
+
+    .editor-tab {
+        padding: 0 8px;
+    }
+
+    .editor-tab span {
+        display: none;
+    }
+
+    .editor-buttons .icon-btn {
+        display: none;
+    }
+
+    .run-btn {
+        padding: 0 9px;
+    }
+
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+@keyframes pulse {
+
+    0%,100% {
+        opacity: .5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+}
+
+
+.generating {
+    animation:
+        pulse 1s infinite;
 }
 
 </style>
@@ -608,193 +1543,282 @@ body {
 <body>
 
 
-<!-- =====================================================
-     NAVBAR
-===================================================== -->
-
-<nav class="navbar">
-
-<div class="container-fluid px-3">
-
-    <a class="navbar-brand" href="#">
-
-        <span class="logo">
-            <i class="bi bi-lightning-charge-fill"></i>
-        </span>
-
-        AI Code Builder
-
-    </a>
+<div class="app">
 
 
-    <div class="d-flex gap-2">
+<!-- =======================================================
+     TOP BAR
+======================================================= -->
 
-        <button
-            class="btn btn-sm btn-outline-secondary"
-            id="theme"
-            title="Change theme"
-        >
-            <i class="bi bi-moon-fill"></i>
-        </button>
+<header class="topbar">
 
-        <button
-            class="btn btn-sm btn-outline-secondary"
-        >
-            <i class="bi bi-gear"></i>
-            <span class="d-none d-md-inline">
-                Settings
+    <div class="brand">
+
+        <div class="brand-mark">
+            <i class="bi bi-stars"></i>
+        </div>
+
+        <div class="brand-name">
+            ForgeAI
+            <span class="brand-badge">
+                AI Code Builder
             </span>
+        </div>
+
+    </div>
+
+
+    <div class="top-actions">
+
+        <button class="top-btn">
+            <i class="bi bi-github"></i>
+            <span>GitHub</span>
         </button>
 
-    </div>
-
-</div>
-
-</nav>
-
-
-
-<!-- =====================================================
-     APP
-===================================================== -->
-
-<div class="container-fluid app">
-
-<div class="row h-100 g-0">
-
-
-<!-- =====================================================
-     SIDEBAR
-===================================================== -->
-
-<div class="col-lg-2 sidebar">
-
-<div class="p-3">
-
-    <div class="sidebar-title">
-        PROJECT
-    </div>
-
-
-    <button
-        class="new-project"
-        id="newProject"
-    >
-        <i class="bi bi-plus-lg"></i>
-        New Project
-    </button>
-
-
-    <div class="folder">
-
-        <i class="bi bi-folder-fill"></i>
-
-        my-project
-
-    </div>
-
-
-    <div
-        class="file active"
-        data-file="html"
-    >
-        <i class="bi bi-filetype-html"></i>
-        index.html
-    </div>
-
-
-    <div
-        class="file"
-        data-file="css"
-    >
-        <i class="bi bi-filetype-css"></i>
-        style.css
-    </div>
-
-
-    <div
-        class="file"
-        data-file="js"
-    >
-        <i class="bi bi-filetype-js"></i>
-        script.js
-    </div>
-
-</div>
-
-</div>
-
-
-
-<!-- =====================================================
-     CENTER
-===================================================== -->
-
-<div class="col-lg-7 center">
-
-
-<!-- EDITOR HEADER -->
-
-<div class="editor-header">
-
-    <div class="tabs">
+        <button class="top-btn">
+            <i class="bi bi-cloud-arrow-up"></i>
+            <span>Deploy</span>
+        </button>
 
         <button
-            class="tab active"
+            class="top-btn"
+            id="themeButton"
+        >
+            <i class="bi bi-moon-stars"></i>
+        </button>
+
+        <div class="user-avatar">
+            A
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- =======================================================
+     WORKSPACE
+======================================================= -->
+
+<main class="workspace">
+
+
+<!-- =======================================================
+     SIDEBAR
+======================================================= -->
+
+<aside class="sidebar">
+
+    <div class="sidebar-inner">
+
+        <div class="section-label">
+            WORKSPACE
+        </div>
+
+
+        <button
+            class="new-project"
+            id="newProject"
+        >
+
+            <i class="bi bi-plus-lg"></i>
+
+            &nbsp;
+
+            New Project
+
+        </button>
+
+
+        <div class="project-info">
+
+            <div class="project-name">
+                untitled-project
+            </div>
+
+            <div class="project-status">
+
+                <span class="online-dot"></span>
+
+                Ready to build
+
+            </div>
+
+        </div>
+
+
+        <div class="file-tree">
+
+            <div class="section-label">
+                FILES
+            </div>
+
+
+            <div class="tree-folder">
+
+                <i class="bi bi-folder-fill"></i>
+
+                src
+
+            </div>
+
+
+            <button
+                class="tree-file html active"
+                data-file="html"
+            >
+
+                <i class="bi bi-filetype-html"></i>
+
+                index.html
+
+            </button>
+
+
+            <button
+                class="tree-file css"
+                data-file="css"
+            >
+
+                <i class="bi bi-filetype-css"></i>
+
+                style.css
+
+            </button>
+
+
+            <button
+                class="tree-file js"
+                data-file="js"
+            >
+
+                <i class="bi bi-filetype-js"></i>
+
+                script.js
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="sidebar-bottom">
+
+        <div class="usage-title">
+
+            <span>
+                AI Usage
+            </span>
+
+            <strong>
+                38%
+            </strong>
+
+        </div>
+
+        <div class="usage-bar">
+            <div class="usage-progress"></div>
+        </div>
+
+    </div>
+
+</aside>
+
+
+
+<!-- =======================================================
+     CENTER
+======================================================= -->
+
+<section class="center">
+
+
+<!-- EDITOR TOOLBAR -->
+
+<div class="editor-toolbar">
+
+    <div class="editor-tabs">
+
+
+        <button
+            class="editor-tab active"
             data-tab="html"
         >
-            <i class="bi bi-filetype-html"></i>
-            HTML
+
+            <i class="bi bi-filetype-html file-icon-html"></i>
+
+            <span>
+                index.html
+            </span>
+
         </button>
 
 
         <button
-            class="tab"
+            class="editor-tab"
             data-tab="css"
         >
-            <i class="bi bi-filetype-css"></i>
-            CSS
+
+            <i class="bi bi-filetype-css file-icon-css"></i>
+
+            <span>
+                style.css
+            </span>
+
         </button>
 
 
         <button
-            class="tab"
+            class="editor-tab"
             data-tab="js"
         >
-            <i class="bi bi-filetype-js"></i>
-            JavaScript
+
+            <i class="bi bi-filetype-js file-icon-js"></i>
+
+            <span>
+                script.js
+            </span>
+
         </button>
 
     </div>
 
 
-    <div class="editor-buttons">
+    <div class="toolbar-actions">
 
         <button
-            class="btn btn-sm btn-outline-secondary"
-            id="copy"
+            class="icon-btn"
+            id="copyButton"
+            title="Copy"
         >
+
             <i class="bi bi-copy"></i>
-            <span class="d-none d-md-inline">
-                Copy
-            </span>
+
         </button>
 
 
         <button
-            class="btn btn-sm btn-outline-secondary"
-            id="download"
+            class="icon-btn"
+            id="downloadButton"
+            title="Download"
         >
+
             <i class="bi bi-download"></i>
+
         </button>
 
 
         <button
-            class="btn btn-sm btn-primary"
-            id="run"
+            class="run-btn"
+            id="runButton"
         >
+
             <i class="bi bi-play-fill"></i>
+
             Run
+
         </button>
 
     </div>
@@ -803,36 +1827,49 @@ body {
 
 
 
-<!-- CODE EDITOR -->
+<!-- EDITOR -->
 
 <div class="editor">
 
-<textarea
-    id="code"
-    spellcheck="false"
-></textarea>
+    <div class="editor-top">
+        UTF-8&nbsp;&nbsp; • &nbsp;&nbsp;HTML
+    </div>
+
+    <textarea
+        id="code"
+        spellcheck="false"
+    ></textarea>
 
 </div>
 
 
 
-<!-- LIVE PREVIEW -->
+<!-- PREVIEW -->
 
 <div class="preview">
 
-    <div class="preview-header">
+    <div class="preview-toolbar">
 
-        <span>
-            <i class="bi bi-window"></i>
-            Live Preview
-        </span>
+        <div class="browser-left">
+
+            <span class="browser-dot"></span>
+            <span class="browser-dot"></span>
+            <span class="browser-dot"></span>
+
+            <span class="preview-url">
+                localhost:3000
+            </span>
+
+        </div>
 
 
         <button
-            class="btn btn-sm btn-outline-secondary"
-            id="refresh"
+            class="icon-btn"
+            id="refreshButton"
         >
+
             <i class="bi bi-arrow-clockwise"></i>
+
         </button>
 
     </div>
@@ -840,52 +1877,61 @@ body {
 
     <iframe
         id="preview"
-        title="Live Preview"
+        sandbox="allow-scripts"
     ></iframe>
 
 </div>
 
 
-</div>
+</section>
 
 
 
-<!-- =====================================================
+<!-- =======================================================
      CHAT
-===================================================== -->
+======================================================= -->
 
-<div class="col-lg-3 chat">
+<aside class="chat">
 
 
 <!-- CHAT HEADER -->
 
 <div class="chat-header">
 
-    <div>
+    <div class="ai-heading">
 
-        <div class="ai-name">
-
-            <span class="ai-online"></span>
-
-            AI Assistant
-
+        <div class="ai-logo">
+            <i class="bi bi-stars"></i>
         </div>
 
-        <div class="chat-subtitle">
+        <div>
 
-            Your AI coding assistant
+            <div class="ai-title">
+                Forge AI
+            </div>
+
+            <div class="ai-subtitle">
+                Intelligent coding assistant
+            </div>
 
         </div>
 
     </div>
 
 
-    <button
-        class="btn btn-sm btn-outline-secondary"
-        id="clear"
-    >
-        <i class="bi bi-trash"></i>
-    </button>
+    <div class="chat-actions">
+
+        <button
+            class="icon-btn"
+            id="clearButton"
+            title="Clear chat"
+        >
+
+            <i class="bi bi-trash3"></i>
+
+        </button>
+
+    </div>
 
 </div>
 
@@ -898,37 +1944,78 @@ body {
     id="messages"
 >
 
-    <div class="message">
 
-        <div class="avatar">
+<!-- WELCOME -->
 
-            <i class="bi bi-robot"></i>
+<div class="welcome">
 
+    <div class="welcome-title">
+        What are we building?
+    </div>
+
+    <div class="welcome-text">
+
+        Describe your idea and I'll turn it
+        into working code.
+
+    </div>
+
+
+    <div class="suggestions">
+
+        <div class="suggestion">
+            Landing page
         </div>
 
+        <div class="suggestion">
+            Portfolio
+        </div>
 
-        <div>
+        <div class="suggestion">
+            Dashboard
+        </div>
 
-            <div class="message-name">
-                AI Builder
-            </div>
+        <div class="suggestion">
+            Login UI
+        </div>
 
-            <div class="message-text">
+    </div>
 
-                Hello! 👋
+</div>
 
-                <br><br>
 
-                Tell me what you want to build.
-                I can generate HTML, CSS,
-                JavaScript, Bootstrap and
-                many other programming languages.
+<!-- INITIAL AI MESSAGE -->
 
-            </div>
+<div class="message">
+
+    <div class="message-avatar">
+        <i class="bi bi-stars"></i>
+    </div>
+
+    <div class="message-body">
+
+        <div class="message-name">
+            FORGE AI
+        </div>
+
+        <div class="message-text">
+
+            Ready when you are. Tell me what
+            you want to create.
+
+            <br><br>
+
+            I can work with
+            <strong>HTML, CSS, JavaScript,
+            Bootstrap</strong> and other
+            programming languages.
 
         </div>
 
     </div>
+
+</div>
+
 
 </div>
 
@@ -938,79 +2025,79 @@ body {
 
 <div class="prompt-area">
 
-    <div class="language-label">
 
-        PROGRAMMING LANGUAGE
+    <div class="language-row">
+
+        <span class="language-label">
+            GENERATION MODE
+        </span>
+
+
+        <select id="language">
+
+            <option value="auto">
+                ✨ Auto Detect
+            </option>
+
+            <option value="html">
+                HTML
+            </option>
+
+            <option value="css">
+                CSS
+            </option>
+
+            <option value="javascript">
+                JavaScript
+            </option>
+
+            <option value="bootstrap">
+                Bootstrap
+            </option>
+
+            <option value="python">
+                Python
+            </option>
+
+            <option value="java">
+                Java
+            </option>
+
+            <option value="cpp">
+                C++
+            </option>
+
+            <option value="c">
+                C
+            </option>
+
+            <option value="csharp">
+                C#
+            </option>
+
+            <option value="go">
+                Go
+            </option>
+
+            <option value="rust">
+                Rust
+            </option>
+
+            <option value="php">
+                PHP
+            </option>
+
+            <option value="sql">
+                SQL
+            </option>
+
+            <option value="any">
+                🌎 Any Language
+            </option>
+
+        </select>
 
     </div>
-
-
-    <select
-        class="form-select language"
-        id="language"
-    >
-
-        <option value="auto">
-            ✨ Auto Detect
-        </option>
-
-        <option value="html">
-            HTML
-        </option>
-
-        <option value="css">
-            CSS
-        </option>
-
-        <option value="javascript">
-            JavaScript
-        </option>
-
-        <option value="bootstrap">
-            Bootstrap
-        </option>
-
-        <option value="python">
-            Python
-        </option>
-
-        <option value="java">
-            Java
-        </option>
-
-        <option value="cpp">
-            C++
-        </option>
-
-        <option value="c">
-            C
-        </option>
-
-        <option value="csharp">
-            C#
-        </option>
-
-        <option value="go">
-            Go
-        </option>
-
-        <option value="rust">
-            Rust
-        </option>
-
-        <option value="php">
-            PHP
-        </option>
-
-        <option value="sql">
-            SQL
-        </option>
-
-        <option value="other">
-            🌎 Any Language
-        </option>
-
-    </select>
 
 
 
@@ -1018,20 +2105,23 @@ body {
 
         <textarea
             id="prompt"
-            rows="4"
-            placeholder="Describe what you want to build..."
+            placeholder="Describe your next feature..."
         ></textarea>
 
 
         <div class="prompt-footer">
 
-            <span class="ai-powered">
+            <div class="prompt-tools">
 
-                <i class="bi bi-stars"></i>
+                <button class="prompt-tool">
+                    <i class="bi bi-paperclip"></i>
+                </button>
 
-                AI Powered
+                <button class="prompt-tool">
+                    <i class="bi bi-image"></i>
+                </button>
 
-            </span>
+            </div>
 
 
             <button
@@ -1043,7 +2133,7 @@ body {
                     Generate
                 </span>
 
-                <i class="bi bi-send-fill"></i>
+                <i class="bi bi-arrow-up"></i>
 
             </button>
 
@@ -1054,24 +2144,31 @@ body {
 </div>
 
 
-</div>
+</aside>
+
+
+</main>
 
 </div>
 
+
+
+<!-- TOAST -->
+
+<div
+    class="toast-message"
+    id="toast"
+>
+    Done
 </div>
 
 
-
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
 
 <script>
 
-
-// =====================================================
-// FILE DATA
-// =====================================================
+/* =========================================================
+   FILE SYSTEM
+========================================================= */
 
 let files = {
 
@@ -1080,33 +2177,30 @@ let files = {
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<title>AI Generated Website</title>
+    <title>ForgeAI Project</title>
 
 </head>
 
 <body>
 
-<div class="container text-center py-5">
+    <div class="container">
 
-<h1>Hello World 👋</h1>
+        <h1>Hello from ForgeAI</h1>
 
-<p>
-Your AI generated website will appear here.
-</p>
+        <p>
+            Your generated website appears here.
+        </p>
 
-<button
-class="btn btn-primary"
-onclick="hello()"
->
-Click Me
-</button>
+        <button onclick="hello()">
+            Get Started
+        </button>
 
-</div>
+    </div>
 
 </body>
 
@@ -1114,425 +2208,638 @@ Click Me
 
     css: `body {
 
-font-family:
-Arial,
-sans-serif;
+    margin: 0;
 
-background:
-#f8f9fa;
+    font-family:
+        Arial,
+        sans-serif;
+
+    background:
+        #f8fafc;
 
 }
 
-h1 {
+.container {
 
-font-weight:
-700;
+    max-width:
+        900px;
+
+    margin:
+        100px auto;
+
+    text-align:
+        center;
+
+}
+
+button {
+
+    padding:
+        12px 20px;
+
+    border:
+        0;
+
+    border-radius:
+        8px;
+
+    background:
+        #6366f1;
+
+    color:
+        white;
+
+    cursor:
+        pointer;
 
 }`,
 
     js: `function hello() {
 
-alert(
-"Hello from AI Code Builder!"
-);
+    alert(
+        "Hello from ForgeAI!"
+    );
 
 }`
 
 };
 
 
-// =====================================================
-// CURRENT FILE
-// =====================================================
-
 let currentFile = "html";
 
 
-// =====================================================
-// ELEMENTS
-// =====================================================
+/* =========================================================
+   ELEMENTS
+========================================================= */
 
 const code =
-document.getElementById("code");
-
-const prompt =
-document.getElementById("prompt");
-
-const language =
-document.getElementById("language");
-
-const messages =
-document.getElementById("messages");
+    document.getElementById("code");
 
 const preview =
-document.getElementById("preview");
+    document.getElementById("preview");
+
+const prompt =
+    document.getElementById("prompt");
+
+const language =
+    document.getElementById("language");
+
+const messages =
+    document.getElementById("messages");
 
 const generate =
-document.getElementById("generate");
+    document.getElementById("generate");
 
 const generateText =
-document.getElementById("generateText");
+    document.getElementById("generateText");
+
+const toast =
+    document.getElementById("toast");
 
 
-// =====================================================
-// LOAD INITIAL CODE
-// =====================================================
+/* =========================================================
+   INITIALIZE
+========================================================= */
 
-code.value = files.html;
+code.value =
+    files.html;
 
 updatePreview();
 
 
-// =====================================================
-// FILE TABS
-// =====================================================
+/* =========================================================
+   FILE TABS
+========================================================= */
 
-document.querySelectorAll(
-".tab"
-).forEach(tab => {
+document
+    .querySelectorAll(".editor-tab")
+    .forEach(tab => {
 
-tab.addEventListener(
-"click",
-() => {
+        tab.addEventListener(
+            "click",
+            () => {
 
-saveCurrentFile();
+                saveCurrent();
 
-currentFile =
-tab.dataset.tab;
+                currentFile =
+                    tab.dataset.tab;
 
-loadCurrentFile();
+                loadCurrent();
 
-document.querySelectorAll(
-".tab"
-).forEach(t =>
-t.classList.remove("active")
-);
+                setActiveTab(
+                    currentFile
+                );
 
-tab.classList.add("active");
+            }
+        );
 
-});
-
-});
+    });
 
 
-// =====================================================
-// SIDEBAR FILES
-// =====================================================
+/* =========================================================
+   SIDEBAR FILES
+========================================================= */
 
-document.querySelectorAll(
-".file"
-).forEach(file => {
+document
+    .querySelectorAll(".tree-file")
+    .forEach(file => {
 
-file.addEventListener(
-"click",
-() => {
+        file.addEventListener(
+            "click",
+            () => {
 
-saveCurrentFile();
+                saveCurrent();
 
-currentFile =
-file.dataset.file;
+                currentFile =
+                    file.dataset.file;
 
-loadCurrentFile();
+                loadCurrent();
 
+                setActiveTab(
+                    currentFile
+                );
 
-document.querySelectorAll(
-".file"
-).forEach(f =>
-f.classList.remove("active")
-);
+                document
+                    .querySelectorAll(".tree-file")
+                    .forEach(f =>
+                        f.classList.remove(
+                            "active"
+                        )
+                    );
 
-file.classList.add("active");
+                file.classList.add(
+                    "active"
+                );
 
+            }
+        );
 
-document.querySelectorAll(
-".tab"
-).forEach(t =>
-t.classList.remove("active")
-);
-
-
-const tab =
-document.querySelector(
-`.tab[data-tab="${currentFile}"]`
-);
-
-if(tab) {
-tab.classList.add("active");
-}
-
-});
-
-});
+    });
 
 
-// =====================================================
-// SAVE FILE
-// =====================================================
+/* =========================================================
+   EDITOR
+========================================================= */
 
 code.addEventListener(
-"input",
-() => {
+    "input",
+    () => {
 
-files[currentFile] =
-code.value;
+        files[currentFile] =
+            code.value;
 
-});
-
-
-// =====================================================
-// LOAD FILE
-// =====================================================
-
-function loadCurrentFile() {
-
-code.value =
-files[currentFile];
-
-}
-
-
-// =====================================================
-// SAVE CURRENT
-// =====================================================
-
-function saveCurrentFile() {
-
-files[currentFile] =
-code.value;
-
-}
-
-
-// =====================================================
-// GENERATE BUTTON
-// =====================================================
-
-generate.addEventListener(
-"click",
-generateCode
+    }
 );
 
 
-// CTRL + ENTER
-// =====================================================
+function saveCurrent() {
 
-prompt.addEventListener(
-"keydown",
-event => {
-
-if(
-event.key === "Enter" &&
-event.ctrlKey
-) {
-
-generateCode();
+    files[currentFile] =
+        code.value;
 
 }
 
-});
+
+function loadCurrent() {
+
+    code.value =
+        files[currentFile];
+
+}
 
 
-// =====================================================
-// GENERATE CODE
-// =====================================================
+function setActiveTab(file) {
+
+    document
+        .querySelectorAll(".editor-tab")
+        .forEach(tab =>
+            tab.classList.remove(
+                "active"
+            )
+        );
+
+    const tab =
+        document.querySelector(
+            `.editor-tab[data-tab="${file}"]`
+        );
+
+    if(tab) {
+        tab.classList.add("active");
+    }
+
+}
+
+
+/* =========================================================
+   PREVIEW
+========================================================= */
+
+function updatePreview() {
+
+    saveCurrent();
+
+    const body =
+        extractBody(files.html);
+
+    const documentContent = `
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
+<style>
+
+${files.css}
+
+</style>
+
+</head>
+
+<body>
+
+${body}
+
+<script>
+
+${files.js}
+
+<\/script>
+
+</body>
+
+</html>
+
+`;
+
+    preview.srcdoc =
+        documentContent;
+
+}
+
+
+function extractBody(html) {
+
+    const match =
+        html.match(
+            /<body[^>]*>([\\s\\S]*?)<\\/body>/i
+        );
+
+    return match
+        ? match[1]
+        : html;
+
+}
+
+
+/* =========================================================
+   RUN
+========================================================= */
+
+document
+    .getElementById("runButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            updatePreview();
+
+            showToast(
+                "Preview updated"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("refreshButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            updatePreview();
+
+            showToast(
+                "Preview refreshed"
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   COPY
+========================================================= */
+
+document
+    .getElementById("copyButton")
+    .addEventListener(
+        "click",
+        async () => {
+
+            try {
+
+                await navigator
+                    .clipboard
+                    .writeText(
+                        code.value
+                    );
+
+                showToast(
+                    "Code copied"
+                );
+
+            }
+
+            catch {
+
+                showToast(
+                    "Copy failed"
+                );
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   DOWNLOAD
+========================================================= */
+
+document
+    .getElementById("downloadButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            saveCurrent();
+
+            const extension = {
+
+                html: "html",
+                css: "css",
+                js: "js"
+
+            }[currentFile];
+
+
+            const blob =
+                new Blob(
+                    [code.value],
+                    {
+                        type:
+                            "text/plain"
+                    }
+                );
+
+
+            const url =
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            const a =
+                document.createElement(
+                    "a"
+                );
+
+            a.href = url;
+
+            a.download =
+                `generated.${extension}`;
+
+            a.click();
+
+            URL.revokeObjectURL(
+                url
+            );
+
+
+            showToast(
+                "File downloaded"
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   GENERATE
+========================================================= */
+
+generate.addEventListener(
+    "click",
+    generateCode
+);
+
+
+prompt.addEventListener(
+    "keydown",
+    event => {
+
+        if(
+            event.key === "Enter" &&
+            event.ctrlKey
+        ) {
+
+            generateCode();
+
+        }
+
+    }
+);
+
 
 async function generateCode() {
 
-const userPrompt =
-prompt.value.trim();
+    const request =
+        prompt.value.trim();
 
-if(!userPrompt) {
+    if(!request) {
 
-alert(
-"Please describe what you want to build."
-);
+        showToast(
+            "Describe what you want to build"
+        );
 
-return;
+        return;
 
-}
-
-
-// Add user message
-
-addMessage(
-"user",
-userPrompt
-);
+    }
 
 
-// Clear prompt
-
-prompt.value = "";
-
-
-// Loading state
-
-generate.disabled = true;
-
-generateText.textContent =
-"Generating...";
+    addMessage(
+        "user",
+        request
+    );
 
 
-await sleep(1200);
+    prompt.value = "";
 
 
-// DEMO AI GENERATOR
+    generate.disabled =
+        true;
 
-const result =
-createDemoProject(
-userPrompt,
-language.value
-);
+    generateText.textContent =
+        "Building...";
 
 
-// Store generated files
-
-files.html =
-result.html;
-
-files.css =
-result.css;
-
-files.js =
-result.js;
+    generate.classList.add(
+        "generating"
+    );
 
 
-// Open HTML
-
-currentFile =
-"html";
+    await wait(1200);
 
 
-// Update editor
-
-code.value =
-files.html;
-
-
-// Update active tab
-
-document.querySelectorAll(
-".tab"
-).forEach(t =>
-t.classList.remove("active")
-);
-
-document.querySelector(
-'.tab[data-tab="html"]'
-).classList.add("active");
+    const result =
+        demoGenerate(
+            request,
+            language.value
+        );
 
 
-// Update sidebar
+    files.html =
+        result.html;
 
-document.querySelectorAll(
-".file"
-).forEach(f =>
-f.classList.remove("active")
-);
+    files.css =
+        result.css;
 
-document.querySelector(
-'.file[data-file="html"]'
-).classList.add("active");
+    files.js =
+        result.js;
 
 
-// Preview
+    currentFile =
+        "html";
 
-updatePreview();
-
-
-// AI message
-
-addMessage(
-"ai",
-"Done! 🚀 I generated your project. You can edit the HTML, CSS and JavaScript and then click Run to preview it."
-);
+    code.value =
+        files.html;
 
 
-// Reset button
+    setActiveTab(
+        "html"
+    );
 
-generate.disabled =
-false;
 
-generateText.textContent =
-"Generate";
+    document
+        .querySelectorAll(".tree-file")
+        .forEach(f =>
+            f.classList.remove(
+                "active"
+            )
+        );
+
+
+    document
+        .querySelector(
+            '.tree-file[data-file="html"]'
+        )
+        .classList.add(
+            "active"
+        );
+
+
+    updatePreview();
+
+
+    addAIResult();
+
+
+    generate.disabled =
+        false;
+
+    generateText.textContent =
+        "Generate";
+
+    generate.classList.remove(
+        "generating"
+    );
 
 }
 
 
-// =====================================================
-// DEMO AI PROJECT
-// =====================================================
+/* =========================================================
+   DEMO GENERATOR
+========================================================= */
 
-function createDemoProject(
-userPrompt,
-selectedLanguage
+function demoGenerate(
+    request,
+    selectedLanguage
 ) {
 
-let title =
-"AI Generated Website";
-
-let description =
-"Built with AI Code Builder.";
-
-const lower =
-userPrompt.toLowerCase();
+    const lower =
+        request.toLowerCase();
 
 
-if(
-lower.includes("portfolio")
-) {
+    let title =
+        "Build Something Amazing";
 
-title =
-"My Portfolio";
-
-description =
-"Welcome to my personal portfolio.";
-
-}
+    let description =
+        "A beautiful experience generated with AI.";
 
 
-if(
-lower.includes("login")
-) {
+    if(
+        lower.includes("portfolio")
+    ) {
 
-title =
-"Welcome Back";
+        title =
+            "Creative Developer";
 
-description =
-"Login to your account.";
+        description =
+            "Design. Build. Create.";
 
-}
-
-
-if(
-lower.includes("landing")
-) {
-
-title =
-"Build Something Amazing";
-
-description =
-"Create beautiful experiences with AI.";
-
-}
+    }
 
 
-if(
-lower.includes("dashboard")
-) {
+    else if(
+        lower.includes("login")
+    ) {
 
-title =
-"Analytics Dashboard";
+        title =
+            "Welcome Back";
 
-description =
-"Monitor your data from one place.";
+        description =
+            "Sign in to continue.";
 
-}
+    }
 
 
-// HTML
+    else if(
+        lower.includes("dashboard")
+    ) {
 
-const html = `<!DOCTYPE html>
+        title =
+            "Analytics Dashboard";
+
+        description =
+            "Everything you need at a glance.";
+
+    }
+
+
+    else if(
+        lower.includes("landing")
+    ) {
+
+        title =
+            "Launch Your Next Idea";
+
+        description =
+            "Turn your ideas into reality.";
+
+    }
+
+
+    const html = `<!DOCTYPE html>
 
 <html lang="en">
 
@@ -1556,16 +2863,12 @@ rel="stylesheet"
 
 <body>
 
-
 <nav class="navbar navbar-dark bg-dark">
 
 <div class="container">
 
-<a
-class="navbar-brand fw-bold"
-href="#"
->
-AI Code Builder
+<a class="navbar-brand fw-bold">
+ForgeAI
 </a>
 
 </div>
@@ -1581,7 +2884,7 @@ AI Code Builder
 AI GENERATED
 </span>
 
-<h1 class="display-3 fw-bold">
+<h1 class="display-2 fw-bold">
 ${title}
 </h1>
 
@@ -1593,7 +2896,9 @@ ${description}
 class="btn btn-primary btn-lg"
 onclick="showMessage()"
 >
+
 Get Started
+
 </button>
 
 </div>
@@ -1605,20 +2910,23 @@ Get Started
 
 <div class="row g-4">
 
-
 <div class="col-md-4">
 
 <div class="card feature h-100">
 
 <div class="card-body">
 
+<div class="fs-2 mb-3">
+⚡
+</div>
+
 <h4>
-⚡ Fast
+Fast
 </h4>
 
 <p>
-Generate websites quickly
-using AI.
+Build your ideas faster
+with AI-powered generation.
 </p>
 
 </div>
@@ -1634,13 +2942,17 @@ using AI.
 
 <div class="card-body">
 
+<div class="fs-2 mb-3">
+✨
+</div>
+
 <h4>
-📱 Responsive
+Modern
 </h4>
 
 <p>
-Works beautifully across
-different devices.
+Beautiful and responsive
+user experiences.
 </p>
 
 </div>
@@ -1656,13 +2968,17 @@ different devices.
 
 <div class="card-body">
 
+<div class="fs-2 mb-3">
+🚀
+</div>
+
 <h4>
-🚀 Powerful
+Powerful
 </h4>
 
 <p>
-Create modern websites
-with AI.
+Turn simple prompts into
+working interfaces.
 </p>
 
 </div>
@@ -1670,37 +2986,38 @@ with AI.
 </div>
 
 </div>
-
 
 </div>
 
 </section>
 
 
-<footer
-class="text-center py-4"
->
+<script>
 
-<p class="text-muted">
-Generated by AI Code Builder
-</p>
+function showMessage() {
 
-</footer>
+alert(
+"Built with ForgeAI 🚀"
+);
 
+}
+
+<\/script>
 
 </body>
 
 </html>`;
 
 
-const css = `body {
+    const css = `body {
 
 font-family:
+Inter,
 Arial,
 sans-serif;
 
 background:
-#f8f9fa;
+#f8fafc;
 
 }
 
@@ -1712,19 +3029,12 @@ padding:
 background:
 linear-gradient(
 135deg,
-#111827,
+#0f172a,
 #312e81
 );
 
 color:
 white;
-
-}
-
-.hero h1 {
-
-margin-bottom:
-20px;
 
 }
 
@@ -1737,7 +3047,7 @@ padding:
 20px;
 
 box-shadow:
-0 10px 30px
+0 15px 40px
 rgba(0,0,0,.08);
 
 transition:
@@ -1748,287 +3058,88 @@ transition:
 .feature:hover {
 
 transform:
-translateY(-6px);
+translateY(-7px);
 
 }`;
 
-const js = `function showMessage() {
+    const js = `function showMessage() {
 
 alert(
-"Hello from your AI generated website! 🚀"
+"Built with ForgeAI 🚀"
 );
 
 }
 
 console.log(
-"AI Code Builder"
+"Request:",
+"${escapeJS(request)}"
 );
 
 console.log(
-"User request: ${escapeText(userPrompt)}"
-);
-
-console.log(
-"Language: ${escapeText(selectedLanguage)}"
+"Language:",
+"${escapeJS(selectedLanguage)}"
 );`;
 
 
-return {
-
-html,
-css,
-js
-
-};
+    return {
+        html,
+        css,
+        js
+    };
 
 }
 
 
-// =====================================================
-// PREVIEW
-// =====================================================
-
-function updatePreview() {
-
-saveCurrentFile();
-
-
-const html =
-files.html;
-
-const css =
-files.css;
-
-const js =
-files.js;
-
-
-const body =
-extractBody(html);
-
-
-const documentContent = `
-
-<!DOCTYPE html>
-
-<html>
-
-<head>
-
-<meta
-charset="UTF-8"
->
-
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
->
-
-<style>
-
-${css}
-
-</style>
-
-</head>
-
-<body>
-
-${body}
-
-<script>
-
-${js}
-
-<\/script>
-
-</body>
-
-</html>
-
-`;
-
-
-preview.srcdoc =
-documentContent;
-
-}
-
-
-// =====================================================
-// RUN
-// =====================================================
-
-document.getElementById(
-"run"
-).addEventListener(
-"click",
-() => {
-
-updatePreview();
-
-});
-
-
-// =====================================================
-// REFRESH
-// =====================================================
-
-document.getElementById(
-"refresh"
-).addEventListener(
-"click",
-() => {
-
-updatePreview();
-
-});
-
-
-// =====================================================
-// COPY
-// =====================================================
-
-document.getElementById(
-"copy"
-).addEventListener(
-"click",
-async () => {
-
-try {
-
-await navigator.clipboard.writeText(
-code.value
-);
-
-alert(
-"Code copied successfully!"
-);
-
-}
-
-catch {
-
-alert(
-"Could not copy the code."
-);
-
-}
-
-});
-
-
-// =====================================================
-// DOWNLOAD
-// =====================================================
-
-document.getElementById(
-"download"
-).addEventListener(
-"click",
-() => {
-
-saveCurrentFile();
-
-
-let extension =
-"html";
-
-if(currentFile === "css") {
-extension = "css";
-}
-
-if(currentFile === "js") {
-extension = "js";
-}
-
-
-const blob =
-new Blob(
-[code.value],
-{
-type: "text/plain"
-}
-);
-
-
-const url =
-URL.createObjectURL(
-blob
-);
-
-
-const link =
-document.createElement(
-"a"
-);
-
-link.href =
-url;
-
-link.download =
-`generated.${extension}`;
-
-link.click();
-
-
-URL.revokeObjectURL(
-url
-);
-
-});
-
-
-// =====================================================
-// CHAT MESSAGE
-// =====================================================
+/* =========================================================
+   CHAT
+========================================================= */
 
 function addMessage(
-type,
-text
+    type,
+    text
 ) {
 
-const message =
-document.createElement(
-"div"
-);
+    const message =
+        document.createElement(
+            "div"
+        );
 
-message.className =
-`message ${type}`;
-
-
-const icon =
-type === "user"
-?
-"bi-person-fill"
-:
-"bi-robot";
+    message.className =
+        `message ${
+            type === "user"
+            ? "user-message"
+            : ""
+        }`;
 
 
-const name =
-type === "user"
-?
-"You"
-:
-"AI Builder";
+    const icon =
+        type === "user"
+        ? "bi-person"
+        : "bi-stars";
 
 
-message.innerHTML = `
+    const name =
+        type === "user"
+        ? "YOU"
+        : "FORGE AI";
 
-<div class="avatar">
+
+    message.innerHTML = `
+
+<div class="message-avatar">
 
 <i class="bi ${icon}"></i>
 
 </div>
 
-<div>
+<div class="message-body">
 
 <div class="message-name">
 ${name}
 </div>
 
 <div class="message-text">
-${escapeHtml(text)}
+${escapeHTML(text)}
 </div>
 
 </div>
@@ -2036,48 +3147,159 @@ ${escapeHtml(text)}
 `;
 
 
-messages.appendChild(
-message
-);
+    messages.appendChild(
+        message
+    );
 
 
-messages.scrollTop =
-messages.scrollHeight;
+    messages.scrollTop =
+        messages.scrollHeight;
 
 }
 
 
-// =====================================================
-// CLEAR CHAT
-// =====================================================
+function addAIResult() {
 
-document.getElementById(
-"clear"
-).addEventListener(
-"click",
-() => {
+    const message =
+        document.createElement(
+            "div"
+        );
 
-messages.innerHTML = "";
-
-addMessage(
-"ai",
-"Chat cleared. What would you like to build?"
-);
-
-});
+    message.className =
+        "message";
 
 
-// =====================================================
-// NEW PROJECT
-// =====================================================
+    message.innerHTML = `
 
-document.getElementById(
-"newProject"
-).addEventListener(
-"click",
-() => {
+<div class="message-avatar">
 
-files.html =
+<i class="bi bi-stars"></i>
+
+</div>
+
+<div class="message-body">
+
+<div class="message-name">
+FORGE AI
+</div>
+
+<div class="message-text">
+
+Project generated successfully.
+
+</div>
+
+
+<div class="code-result">
+
+<div class="result-row">
+
+<i class="bi bi-check-circle-fill check"></i>
+
+HTML generated
+
+</div>
+
+
+<div class="result-row">
+
+<i class="bi bi-check-circle-fill check"></i>
+
+CSS generated
+
+</div>
+
+
+<div class="result-row">
+
+<i class="bi bi-check-circle-fill check"></i>
+
+JavaScript generated
+
+</div>
+
+
+<div class="result-row">
+
+<i class="bi bi-check-circle-fill check"></i>
+
+Live preview ready
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+
+    messages.appendChild(
+        message
+    );
+
+
+    messages.scrollTop =
+        messages.scrollHeight;
+
+}
+
+
+/* =========================================================
+   SUGGESTIONS
+========================================================= */
+
+document
+    .querySelectorAll(".suggestion")
+    .forEach(item => {
+
+        item.addEventListener(
+            "click",
+            () => {
+
+                prompt.value =
+                    `Create a modern ${item.textContent.trim().toLowerCase()} website with a premium responsive design.`;
+
+                prompt.focus();
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   CLEAR
+========================================================= */
+
+document
+    .getElementById("clearButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            messages.innerHTML = "";
+
+            addMessage(
+                "ai",
+                "Chat cleared. Tell me what you want to build."
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   NEW PROJECT
+========================================================= */
+
+document
+    .getElementById("newProject")
+    .addEventListener(
+        "click",
+        () => {
+
+            files.html =
 `<!DOCTYPE html>
 
 <html>
@@ -2097,128 +3319,122 @@ files.html =
 </html>`;
 
 
-files.css =
+            files.css =
 `body {
 
 font-family:
-Arial;
+Arial,
+sans-serif;
 
 }`;
 
 
-files.js =
+            files.js =
 `console.log(
-"New Project"
+"New ForgeAI project"
 );`;
 
 
-currentFile =
-"html";
+            currentFile =
+                "html";
 
-code.value =
-files.html;
+            code.value =
+                files.html;
 
-updatePreview();
+            setActiveTab(
+                "html"
+            );
 
-});
+            updatePreview();
 
+            showToast(
+                "New project created"
+            );
 
-// =====================================================
-// DARK / LIGHT
-// =====================================================
-
-document.getElementById(
-"theme"
-).addEventListener(
-"click",
-() => {
-
-document.body.classList.toggle(
-"light"
-);
+        }
+    );
 
 
-const icon =
-document.querySelector(
-"#theme i"
-);
+/* =========================================================
+   THEME
+========================================================= */
+
+document
+    .getElementById("themeButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            showToast(
+                "Dark workspace optimized for coding"
+            );
+
+        }
+    );
 
 
-if(
-document.body.classList.contains(
-"light"
-)
-) {
+/* =========================================================
+   HELPERS
+========================================================= */
 
-icon.className =
-"bi bi-sun-fill";
+function wait(ms) {
 
-}
-else {
-
-icon.className =
-"bi bi-moon-fill";
-
-}
-
-});
-
-
-// =====================================================
-// UTILITIES
-// =====================================================
-
-function sleep(ms) {
-
-return new Promise(
-resolve =>
-setTimeout(resolve, ms)
-);
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                ms
+            )
+    );
 
 }
 
 
-function extractBody(html) {
+function escapeHTML(text) {
 
-const match =
-html.match(
-/<body[^>]*>([\\s\\S]*?)<\\/body>/i
-);
+    const element =
+        document.createElement(
+            "div"
+        );
 
+    element.textContent =
+        text;
 
-if(match) {
-
-return match[1];
-
-}
-
-
-return html;
+    return element.innerHTML;
 
 }
 
 
-function escapeHtml(text) {
+function escapeJS(text) {
 
-const element =
-document.createElement(
-"div"
-);
-
-element.textContent =
-text;
-
-return element.innerHTML;
+    return text
+        .replace(/\\/g, "\\\\")
+        .replace(/`/g, "\\`")
+        .replace(/\$/g, "\\$");
 
 }
 
 
-function escapeText(text) {
+function showToast(text) {
 
-return text
-.replace(/\\/g, "\\\\")
-.replace(/`/g, "\\`")
-.replace(/\$/g, "\\$");
+    toast.textContent =
+        text;
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    setTimeout(
+        () => {
+
+            toast.classList.remove(
+                "show"
+            );
+
+        },
+        2200
+    );
 
 }
 
